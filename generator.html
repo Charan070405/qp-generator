@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper Generator - AQGS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.0.7/pizzip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.23.5/docxtemplater.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.3/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+            margin: -20px -20px 20px -20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background-color: #34495e;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-top: 20px;
+        }
+
+        .logo {
+            max-width: 150px;
+            margin-bottom: 1rem;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .info-box input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .generate-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .faculty-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .faculty-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        #loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .download-button {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#" class="active">QP Generator</a>
+        <a href="login.php">Login</a>
+    </nav>
+
+    <div class="header">
+        <img src="vit 1.jpeg" alt="College Logo" class="logo">
+        <h1>Internal Assessment Generator</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <input type="text" id="semSec" placeholder="SEM/SEC" required>
+            <input type="text" id="subject" placeholder="SUBJECT" required>
+            <input type="text" id="faculty" placeholder="FACULTY" required>
+        </div>
+        <div class="info-box">
+            <input type="date" id="date" required>
+            <input type="time" id="time" required>
+            <input type="number" id="maxMarks" placeholder="Max. Marks" required>
+        </div>
+    </div>
+
+    
+
+    <div id="questionsContainer"></div>
+
+    <div class="faculty-info">
+        <div class="faculty-box">
+            <p><strong>FACULTY</strong></p>
+            <input type="text" id="facultyName" placeholder="Enter faculty name">
+        </div>
+        <div class="faculty-box">
+            <p><strong>HOD</strong></p>
+            <input type="text" id="hodName" placeholder="Enter HOD name">
+        </div>
+        <div class="faculty-box">
+            <p><strong>PRINCIPAL</strong></p>
+            <input type="text" id="principalName" placeholder="Enter principal name">
+        </div>
+    </div>
+
+    <div class="generate-section">
+        <input type="text" id="topic" placeholder="Enter topic for questions" style="width: 300px; padding: 10px; margin-right: 10px;">
+        <button onclick="generateQuestions()" href="index.html">Generate Questions</button>
+    </div>
+
+    <div id="loading">Generating questions... Please wait.</div>
+
+    <script>
+        function generateQuestions() {
+    // Store input values in localStorage
+    localStorage.setItem('semSec', document.getElementById('semSec').value);
+    localStorage.setItem('subject', document.getElementById('subject').value);
+    localStorage.setItem('faculty', document.getElementById('faculty').value);
+    localStorage.setItem('date', document.getElementById('date').value);
+    localStorage.setItem('time', document.getElementById('time').value);
+    localStorage.setItem('maxMarks', document.getElementById('maxMarks').value);
+    localStorage.setItem('topic', document.getElementById('topic').value);
+    localStorage.setItem('facultyName', document.getElementById('facultyName').value);
+    localStorage.setItem('hodName', document.getElementById('hodName').value);
+    localStorage.setItem('principalName', document.getElementById('principalName').value);
+
+    // Redirect to the new page
+    window.location.href = 'input-details.html';
+}
+        
+    </script>
+</body>
+</html>
