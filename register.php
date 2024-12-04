@@ -8,18 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['register'])) {
         $username = mysqli_real_escape_string($conn, $_POST['username']);
         $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $password = $_POST['password']; // Raw password, we will hash it later
+        $password = $_POST['password']; // Raw password, we will validate and hash it later
 
-        // Hash the password before storing it
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Insert user data into database
-        $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
-
-        if (mysqli_query($conn, $sql)) {
-            $message = "Registration successful! You can now <a href='login.php'>login</a>.";
+        // Validate password length and character composition
+        if (strlen($password) < 8 || !preg_match('/[A-Za-z]/', $password) || !preg_match('/[\W]/', $password)) {
+            $message = "Password must be at least 8 characters long and contain both letters and symbols.";
         } else {
-            $message = "Error: " . mysqli_error($conn);
+            // Hash the password before storing it
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            // Insert user data into database
+            $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
+
+            if (mysqli_query($conn, $sql)) {
+                $message = "Registration successful! You can now <a href='login.php'>login</a>.";
+            } else {
+                $message = "Error: " . mysqli_error($conn);
+            }
         }
     }
 }
