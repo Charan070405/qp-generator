@@ -92,38 +92,33 @@
 
         .section {
             margin-bottom: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 15px;
-        }
+            border: 1px solid #dee2e6; 
+			border-radius :5 px; 
+			padding :15 px; 
+		}
 
-        .faculty-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+		.faculty-info { 
+			display:flex ; 
+			justify-content :space-between ; 
+			margin-top :30 px ; 
+			flex-wrap :wrap ; 
+			gap :20 px ; 
+		}
 
-        .faculty-box {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            padding: 15px;
-            flex: 1;
-            min-width: 250px;
-        }
+		.faculty-box { 
+			background-color:#f8f9fa ; 
+			border :1 px solid #dee2e6 ; 
+			border-radius :5 px ; 
+			padding :15 px ; 
+			flex :1; 
+			min-width :250 px; 
+		}
 
-        #loading {
-            text-align: center;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .download-button {
-            text-align: center;
-            margin-top: 30px;
-        }
+		#loading { 
+			text-align:center; 
+			margin :20 px 0; 
+			display:none; 
+		}
     </style>
 </head>
 <body>
@@ -134,67 +129,111 @@
     </nav>
 
     <div class="header">
-        <img src="vit 1.jpeg" alt="College Logo" class="logo">
+        <img src="vit_1.jpeg" alt="College Logo" class="logo">
         <h1>Internal Assessment Generator</h1>
     </div>
 
     <div class="container">
-        <div class="info-box">
-            <input type="text" id="semSec" placeholder="SEM/SEC" required>
-            <input type="text" id="subject" placeholder="SUBJECT" required>
-            <input type="text" id="faculty" placeholder="FACULTY" required>
-        </div>
-        <div class="info-box">
-            <input type="date" id="date" required>
-            <input type="time" id="time" required>
-            <input type="number" id="maxMarks" placeholder="Max. Marks" required>
-        </div>
-    </div>
+       <div class="info-box">
+           <input type="text" id="semSec" placeholder="SEM/SEC" required>
+           <input type="text" id="subject" placeholder="SUBJECT" required>
+           <input type="text" id="faculty" placeholder="FACULTY" required>
+       </div>
+       <div class="info-box">
+           <input type="date" id="date" required>
+           <input type="time" id="time" required>
+           <input type="number" id="maxMarks" placeholder="Max. Marks" required>
+       </div>
+   </div>
 
-    
+   <div class="generate-section">
+       <input type="file" id="imageInput" accept="image/*">
+       <button id="generateBtn" onclick="generateQuestions()" disabled>Generate Questions</button>
+   </div>
 
-    <div id="questionsContainer"></div>
+   <div id="questionsContainer" class="section"></div>
 
-    <div class="faculty-info">
-        <div class="faculty-box">
-            <p><strong>FACULTY</strong></p>
-            <input type="text" id="facultyName" placeholder="Enter faculty name">
-        </div>
-        <div class="faculty-box">
-            <p><strong>HOD</strong></p>
-            <input type="text" id="hodName" placeholder="Enter HOD name">
-        </div>
-        <div class="faculty-box">
-            <p><strong>PRINCIPAL</strong></p>
-            <input type="text" id="principalName" placeholder="Enter principal name">
-        </div>
-    </div>
+   <div class="faculty-info">
+       <div class="faculty-box">
+           <p><strong>FACULTY</strong></p>
+           <input type="text" id="facultyName" placeholder="Enter faculty name">
+       </div>
+       <div class="faculty-box">
+           <p><strong>HOD</strong></p>
+           <input type="text" id="hodName" placeholder="Enter HOD name">
+       </div>
+       <div class="faculty-box">
+           <p><strong>PRINCIPAL</strong></p>
+           <input type="text" id="principalName" placeholder="Enter principal name">
+       </div>
+   </div>
 
-    <div class="generate-section">
-        <input type="text" id="topic" placeholder="Enter topic for questions" style="width: 300px; padding: 10px; margin-right: 10px;">
-        <button onclick="generateQuestions()" href="index.html">Generate Questions</button>
-    </div>
+   <div id="loading">Generating questions... Please wait.</div>
 
-    <div id="loading">Generating questions... Please wait.</div>
+   <script>
+       document.getElementById('imageInput').addEventListener('change', function() {
+           document.getElementById('generateBtn').disabled = !this.files.length; // Enable button if file is selected
+       });
 
-    <script>
-        function generateQuestions() {
-    // Store input values in localStorage
-    localStorage.setItem('semSec', document.getElementById('semSec').value);
-    localStorage.setItem('subject', document.getElementById('subject').value);
-    localStorage.setItem('faculty', document.getElementById('faculty').value);
-    localStorage.setItem('date', document.getElementById('date').value);
-    localStorage.setItem('time', document.getElementById('time').value);
-    localStorage.setItem('maxMarks', document.getElementById('maxMarks').value);
-    localStorage.setItem('topic', document.getElementById('topic').value);
-    localStorage.setItem('facultyName', document.getElementById('facultyName').value);
-    localStorage.setItem('hodName', document.getElementById('hodName').value);
-    localStorage.setItem('principalName', document.getElementById('principalName').value);
+       async function generateQuestions() {
+           const formData = new FormData();
+           formData.append('semSec', document.getElementById('semSec').value);
+           formData.append('subject', document.getElementById('subject').value);
+           formData.append('faculty', document.getElementById('faculty').value);
+           formData.append('date', document.getElementById('date').value);
+           formData.append('time', document.getElementById('time').value);
+           formData.append('maxMarks', document.getElementById('maxMarks').value);
+           formData.append('facultyName', document.getElementById('facultyName').value);
+           formData.append('hodName', document.getElementById('hodName').value);
+           formData.append('principalName', document.getElementById('principalName').value);
+           
+           const imageInput = document.getElementById('imageInput');
+           const file = imageInput.files[0];
+           
+           if (file) {
+               formData.append('image', file); // Append the image file to the FormData
+           } else {
+               alert("Please upload an image.");
+               return; // Exit if no image is uploaded
+           }
+           
+           // Show loading message
+           document.getElementById('loading').style.display = 'block';
 
-    // Redirect to the new page
-    window.location.href = 'input-details.html';
-}
-        
-    </script>
+           try {
+               const response = await fetch('http://localhost:3000/generate-questions', { // Change this URL to your backend API endpoint
+                   method: 'POST',
+                   body: formData,
+               });
+
+               if (!response.ok) {
+                   throw new Error(`Error fetching data from server! Status code ${response.status}`);
+               }
+               
+               const questionsText = await response.text(); // Get raw text response
+               
+               // Clear previous questions
+               const container = document.getElementById('questionsContainer');
+               container.innerHTML = ''; 
+
+               // Process the response and format it into sections
+               const sections = questionsText.split(/\n\s*\n/); // Split by double newlines for sections
+               sections.forEach((section, index) => {
+                   const sectionDiv = document.createElement('div');
+                   sectionDiv.className = 'section';
+                   sectionDiv.innerHTML = `<h3>Section ${index + 1}:</h3><ol>${section.split('\n').map(q => `<li>${q.trim()}</li>`).join('')}</ol>`;
+                   container.appendChild(sectionDiv);
+               });
+               
+           } catch (error) {
+               console.error('Error generating questions:', error);
+               alert('Failed to generate questions. Please try again later.');
+           } finally {
+               // Hide loading message
+               document.getElementById('loading').style.display = 'none';
+           }
+       }
+   </script>
+
 </body>
 </html>
