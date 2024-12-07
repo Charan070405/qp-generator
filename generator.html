@@ -1,3 +1,4 @@
+<!-- generator.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,6 +120,23 @@
 			margin :20 px 0; 
 			display:none; 
 		}
+        .questions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .questions-table th, .questions-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .questions-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .questions-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -171,69 +189,67 @@
    <div id="loading">Generating questions... Please wait.</div>
 
    <script>
-       document.getElementById('imageInput').addEventListener('change', function() {
-           document.getElementById('generateBtn').disabled = !this.files.length; // Enable button if file is selected
-       });
+    document.getElementById('imageInput').addEventListener('change', function() {
+        document.getElementById('generateBtn').disabled = !this.files.length;
+    });
 
-       async function generateQuestions() {
-           const formData = new FormData();
-           formData.append('semSec', document.getElementById('semSec').value);
-           formData.append('subject', document.getElementById('subject').value);
-           formData.append('faculty', document.getElementById('faculty').value);
-           formData.append('date', document.getElementById('date').value);
-           formData.append('time', document.getElementById('time').value);
-           formData.append('maxMarks', document.getElementById('maxMarks').value);
-           formData.append('facultyName', document.getElementById('facultyName').value);
-           formData.append('hodName', document.getElementById('hodName').value);
-           formData.append('principalName', document.getElementById('principalName').value);
-           
-           const imageInput = document.getElementById('imageInput');
-           const file = imageInput.files[0];
-           
-           if (file) {
-               formData.append('image', file); // Append the image file to the FormData
-           } else {
-               alert("Please upload an image.");
-               return; // Exit if no image is uploaded
-           }
-           
-           // Show loading message
-           document.getElementById('loading').style.display = 'block';
+    async function generateQuestions() {
+        const formData = new FormData();
+        // Get all form values
+        const formValues = {
+            semSec: document.getElementById('semSec').value,
+            subject: document.getElementById('subject').value,
+            faculty: document.getElementById('faculty').value,
+            date: document.getElementById('date').value,
+            time: document.getElementById('time').value,
+            maxMarks: document.getElementById('maxMarks').value,
+            facultyName: document.getElementById('facultyName').value,
+            hodName: document.getElementById('hodName').value,
+            principalName: document.getElementById('principalName').value
+        };
 
-           try {
-               const response = await fetch('http://localhost:3000/generate-questions', { // Change this URL to your backend API endpoint
-                   method: 'POST',
-                   body: formData,
-               });
+        // Store form values in localStorage
+        Object.keys(formValues).forEach(key => {
+            localStorage.setItem(key, formValues[key]);
+            formData.append(key, formValues[key]);
+        });
 
-               if (!response.ok) {
-                   throw new Error(`Error fetching data from server! Status code ${response.status}`);
-               }
-               
-               const questionsText = await response.text(); // Get raw text response
-               
-               // Clear previous questions
-               const container = document.getElementById('questionsContainer');
-               container.innerHTML = ''; 
+        const imageInput = document.getElementById('imageInput');
+        const file = imageInput.files[0];
+        
+        if (!file) {
+            alert("Please upload an image.");
+            return;
+        }
+        
+        formData.append('image', file);
+        document.getElementById('loading').style.display = 'block';
 
-               // Process the response and format it into sections
-               const sections = questionsText.split(/\n\s*\n/); // Split by double newlines for sections
-               sections.forEach((section, index) => {
-                   const sectionDiv = document.createElement('div');
-                   sectionDiv.className = 'section';
-                   sectionDiv.innerHTML = `<h3>Section ${index + 1}:</h3><ol>${section.split('\n').map(q => `<li>${q.trim()}</li>`).join('')}</ol>`;
-                   container.appendChild(sectionDiv);
-               });
-               
-           } catch (error) {
-               console.error('Error generating questions:', error);
-               alert('Failed to generate questions. Please try again later.');
-           } finally {
-               // Hide loading message
-               document.getElementById('loading').style.display = 'none';
-           }
-       }
-   </script>
+        try {
+            const response = await fetch('http://localhost:3000/generate-questions', {
+                method: 'POST',
+                body: formData,
+            });
 
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Store questions in localStorage
+            localStorage.setItem('generatedQuestions', JSON.stringify(data.questions));
+            
+            // Redirect to input-details.html
+            window.location.href = 'input-details.html';
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to generate questions. Please try again.');
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+</script>
 </body>
 </html>
