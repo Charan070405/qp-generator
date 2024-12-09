@@ -22,6 +22,8 @@ function determineQuestionCount(marks) {
     switch(marks) {
         case 25: return 2;
         case 50: return 3;
+        case 100: return 5;
+
         default: return 2;
     }
 }
